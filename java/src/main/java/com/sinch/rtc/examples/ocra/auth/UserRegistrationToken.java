@@ -19,6 +19,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.crypto.SecretKey;
@@ -48,7 +49,7 @@ public class UserRegistrationToken {
    * Construct a User registration token.
    *
    * @param applicationKey <i>Sinch Application Key</i>
-   * @param applicationSecret <i>Sinch Application Secret</i>
+   * @param applicationSecret <i>Sinch Application Secret</i> (in base64-encoded format)
    * @param userId User ID
    * @param nonce <a href="https://en.wikipedia.org/wiki/Cryptographic_nonce">Cryptographic
    *     nonce</a> (will be used as JWT claim <i>nonce</i>). Should be unique per token.
@@ -64,7 +65,7 @@ public class UserRegistrationToken {
    */
   public UserRegistrationToken(
       String applicationKey,
-      byte[] applicationSecret,
+      String applicationSecret,
       String userId,
       String nonce,
       OffsetDateTime issuedAt,
@@ -72,14 +73,14 @@ public class UserRegistrationToken {
       OffsetDateTime instanceExpiresAt) {
     if (null == applicationKey) throw new IllegalArgumentException("applicationKey");
     if (null == applicationSecret) throw new IllegalArgumentException("applicationSecret");
-    if (applicationSecret.length < 1) throw new IllegalArgumentException("applicationSecret");
+    if (applicationSecret.length() < 1) throw new IllegalArgumentException("applicationSecret");
     if (null == userId) throw new IllegalArgumentException("userId");
     if (null == nonce) throw new IllegalArgumentException("nonce");
     if (null == issuedAt) throw new IllegalArgumentException("issuedAt");
     if (null == expiresAt) throw new IllegalArgumentException("expiresAt");
 
     this.applicationKey = applicationKey;
-    this.applicationSecret = applicationSecret;
+    this.applicationSecret = Base64.getDecoder().decode(applicationSecret);
     this.userId = userId;
     this.nonce = nonce;
     this.issuedAt = issuedAt;
@@ -89,7 +90,7 @@ public class UserRegistrationToken {
 
   public UserRegistrationToken(
       String applicationKey,
-      byte[] applicationSecret,
+      String applicationSecret,
       String userId,
       String nonce,
       OffsetDateTime issuedAt,

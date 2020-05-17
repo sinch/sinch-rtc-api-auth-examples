@@ -19,6 +19,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -35,7 +36,16 @@ public class JwtSigningKey {
     return "hkdfv1-" + formatDate(issuedAt);
   }
 
-  public static byte[] deriveSigningKey(byte[] applicationSecret, OffsetDateTime issuedAt) {
+  /**
+   * @param applicationSecret <i>Sinch Application Secret</i> (in base64-encoded format)
+   * @param issuedAt Time when signing key is issued/created.
+   * @return A derived signing secret key.
+   */
+  public static byte[] deriveSigningKey(String applicationSecret, OffsetDateTime issuedAt) {
+    return deriveSigningKey(Base64.getDecoder().decode(applicationSecret), issuedAt);
+  }
+
+  static byte[] deriveSigningKey(byte[] applicationSecret, OffsetDateTime issuedAt) {
     return hmacSha256(applicationSecret, formatDate(issuedAt));
   }
 

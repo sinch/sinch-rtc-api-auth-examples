@@ -2,13 +2,11 @@ package com.sinch.rtc.examples.ocra.auth;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Base64;
 
 public class ReferenceData {
   public static final String APPLICATION_KEY = "a32e5a8d-f7d8-411c-9645-9038e8dd051d";
 
-  public static final byte[] APPLICATION_SECRET =
-      Base64.getDecoder().decode("ax8hTTQJF0OPXL32r1LHMA==");
+  public static final String APPLICATION_SECRET = "ax8hTTQJF0OPXL32r1LHMA==";
 
   public static final OffsetDateTime NOW =
       OffsetDateTime.of(2018, 1, 2, 3, 4, 5, 0, ZoneOffset.UTC);
