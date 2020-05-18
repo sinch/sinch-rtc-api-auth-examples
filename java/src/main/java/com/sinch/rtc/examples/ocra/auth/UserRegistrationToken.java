@@ -127,7 +127,6 @@ public class UserRegistrationToken {
     JwtBuilder builder =
         Jwts.builder()
             .setHeaderParam("alg", alg.getValue())
-            .setHeaderParam("typ", "JWT")
             .setHeaderParam("kid", JwtSigningKey.keyId(issuedAt))
             .setClaims(claims);
 
