@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.sinch.rtc.examples.ocra.auth;
+package com.sinch.rtc.examples.jwt;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -45,7 +45,7 @@ public class JwtSigningKey {
     return deriveSigningKey(Base64.getDecoder().decode(applicationSecret), issuedAt);
   }
 
-  static byte[] deriveSigningKey(byte[] applicationSecret, OffsetDateTime issuedAt) {
+  public static byte[] deriveSigningKey(byte[] applicationSecret, OffsetDateTime issuedAt) {
     return hmacSha256(applicationSecret, formatDate(issuedAt));
   }
 
