@@ -1,7 +1,8 @@
-package com.sinch.rtc.examples.ocra.auth;
+package com.sinch.rtc.examples.jwt;
 
 import static org.junit.Assert.assertEquals;
 
+import com.sinch.rtc.examples.ReferenceData;
 import java.time.OffsetDateTime;
 import java.util.Base64;
 import org.junit.*;

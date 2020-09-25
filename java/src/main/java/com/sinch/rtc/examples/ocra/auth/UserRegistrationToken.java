@@ -14,6 +14,7 @@
 
 package com.sinch.rtc.examples.ocra.auth;
 
+import com.sinch.rtc.examples.jwt.JwtSigningKey;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

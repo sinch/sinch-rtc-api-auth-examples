@@ -2,6 +2,7 @@ package com.sinch.rtc.examples.ocra.auth;
 
 import static org.junit.Assert.assertEquals;
 
+import com.sinch.rtc.examples.ReferenceData;
 import java.time.OffsetDateTime;
 import org.junit.*;
 

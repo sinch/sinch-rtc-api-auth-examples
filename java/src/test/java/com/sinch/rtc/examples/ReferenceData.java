@@ -1,4 +1,4 @@
-package com.sinch.rtc.examples.ocra.auth;
+package com.sinch.rtc.examples;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
