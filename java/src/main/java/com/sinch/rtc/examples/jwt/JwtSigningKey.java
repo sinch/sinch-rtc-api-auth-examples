@@ -17,7 +17,9 @@ package com.sinch.rtc.examples.jwt;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import javax.crypto.Mac;
@@ -34,6 +36,15 @@ public class JwtSigningKey {
 
   public static String keyId(OffsetDateTime issuedAt) {
     return "hkdfv1-" + formatDate(issuedAt);
+  }
+
+  public static OffsetDateTime parseIssuedAtFromKeyId(String kid) {
+    if (!kid.startsWith("hkdfv1-"))
+      throw new IllegalArgumentException("Invalid key id ('kid'), expected prefix 'hkdfv1-'");
+
+    LocalDate utcDate = LocalDate.parse(kid.substring("hkdfv1-".length()), DATE_FORMATTER);
+
+    return utcDate.atStartOfDay(ZoneId.of("Z")).toOffsetDateTime();
   }
 
   /**
