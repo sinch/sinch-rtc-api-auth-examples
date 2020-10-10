@@ -14,4 +14,6 @@ public class ReferenceData {
   public static final String EXTERNAL_USER_ID = "foo";
 
   public static final String JWT_NONCE = "6b438bda-2d5c-4e8c-92b0-39f20a94b34e";
+
+  public static final String HMS_APP_ID = "123456789";
 }

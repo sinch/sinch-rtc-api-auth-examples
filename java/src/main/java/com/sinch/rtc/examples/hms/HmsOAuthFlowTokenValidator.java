@@ -48,7 +48,7 @@ public class HmsOAuthFlowTokenValidator {
    * Authorization Server token endpoint, as part of the Sinch Managed Push OAuth 2.0 Flow for
    * Huawei Push Messages (HMS/HPK).
    */
-  public boolean IsTokenValid(String clientAssertionJwt, OffsetDateTime now) {
+  public TokenValidationResult Validate(String clientAssertionJwt, OffsetDateTime now) {
 
     // 1. Use JWT header `kid` and claim `sub` to lookup (your) Sinch Application
     // Secret, which will be used to derive a signing key.
@@ -66,7 +66,7 @@ public class HmsOAuthFlowTokenValidator {
               .build()
               .parseClaimsJws(clientAssertionJwt);
     } catch (JwtException e) {
-      return false;
+      return TokenValidationResult.Invalid;
     }
 
     // At this point, the JWT should be considered validated in terms
@@ -79,7 +79,27 @@ public class HmsOAuthFlowTokenValidator {
 
     Claims claims = jwt.getBody();
 
-    return "https://push-api.cloud.huawei.com".equals(claims.get("scope"));
+    if (!"https://push-api.cloud.huawei.com".equals(claims.get("scope"))) {
+      return TokenValidationResult.Invalid;
+    }
+
+    // At this point, when the JWT signature has been verified,
+    // extract Sinch Application Key and HMS Application ID from JWT
+    // claims.
+    return TokenValidationResult.Valid(getSinchApplicationKey(claims), getHmsApplicationId(claims));
+  }
+
+  private static String getSinchApplicationKey(JwsHeader jwtHeader) {
+    return (String) jwtHeader.get("sinch:rtc:application_key");
+  }
+
+  private static String getSinchApplicationKey(Claims claims) {
+    return (String) claims.get("sinch:rtc:application_key");
+  }
+
+  private static String getHmsApplicationId(Claims claims) {
+    // Your HMS Application ID is the JWT claim `sub`.
+    return (String) claims.get("sub");
   }
 
   static class SinchSigningKeyResolver extends SigningKeyResolverAdapter {
@@ -95,13 +115,11 @@ public class HmsOAuthFlowTokenValidator {
 
       final OffsetDateTime issuedAt = JwtSigningKey.parseIssuedAtFromKeyId(jwtHeader.getKeyId());
 
-      // The claim `sub` is expected to be your Sinch Application
-      // Key. The JWT as a whole is still not validated but the `sub`
-      // can be used to resolve the expected signing key (Sinch
-      // Application Secret).
+      // Your Sinch Application Key is passed as a JWT header parameter.
+      String applicationKey = getSinchApplicationKey(jwtHeader);
 
       String applicationSecretBase64 =
-          credentialsResolver.resolveSinchApplicationSecret(claims.getSubject());
+          credentialsResolver.resolveSinchApplicationSecret(applicationKey);
 
       if (applicationSecretBase64 == null) return null;
 
